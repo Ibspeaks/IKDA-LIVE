@@ -200,8 +200,8 @@
         >
 
         <p class="terms">
-          By creating an account, you agree to use IKDA Live
-          responsibly and respectfully.
+          By creating an account, you agree to use
+          IKDA Live responsibly and respectfully.
         </p>
 
         <button type="submit" id="registerButton">
@@ -226,39 +226,159 @@
   </div>
 
 
+  <!-- Supabase library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- IKDA Supabase settings -->
+  <script src="supabase-config.js"></script>
+
+
   <script>
-    /*
-      Supabase registration will be connected
-      to this page in the next stage.
-    */
 
-    document.getElementById("registerForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+    const { createClient } = supabase;
 
-      const password =
-        document.getElementById("password").value;
+    const supabaseClient = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-      const confirmPassword =
-        document.getElementById("confirmPassword").value;
 
-      const message =
-        document.getElementById("message");
+    const form =
+      document.getElementById("registerForm");
+
+    const button =
+      document.getElementById("registerButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    function showMessage(text, success = false) {
 
       message.style.display = "block";
+      message.textContent = text;
 
-      if (password !== confirmPassword) {
-        message.style.background = "rgba(255,80,80,.1)";
-        message.style.color = "#ff9c9c";
-        message.textContent =
-          "Passwords do not match.";
-        return;
+      if (success) {
+
+        message.style.background =
+          "rgba(70,200,110,.10)";
+
+        message.style.color =
+          "#7be495";
+
+      } else {
+
+        message.style.background =
+          "rgba(255,80,80,.10)";
+
+        message.style.color =
+          "#ff9c9c";
+
       }
 
-      message.style.background = "rgba(242,201,76,.08)";
-      message.style.color = "#f2c94c";
-      message.textContent =
-        "Registration connection will be activated when Supabase is connected.";
-    });
+    }
+
+
+    form.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const name =
+          document.getElementById("name")
+            .value.trim();
+
+        const email =
+          document.getElementById("email")
+            .value.trim();
+
+        const password =
+          document.getElementById("password")
+            .value;
+
+        const confirmPassword =
+          document.getElementById("confirmPassword")
+            .value;
+
+
+        if (password !== confirmPassword) {
+
+          showMessage(
+            "The passwords do not match."
+          );
+
+          return;
+        }
+
+
+        if (password.length < 6) {
+
+          showMessage(
+            "Password must contain at least 6 characters."
+          );
+
+          return;
+        }
+
+
+        button.disabled = true;
+        button.textContent = "Creating Account...";
+
+        message.style.display = "none";
+
+
+        try {
+
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+                data: {
+                  full_name: name
+                }
+              }
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          showMessage(
+            "Account created successfully. Check your email if verification is required, then login.",
+            true
+          );
+
+
+          form.reset();
+
+          button.disabled = false;
+          button.textContent = "Create Account";
+
+
+        } catch (error) {
+
+          showMessage(
+            error.message ||
+            "Unable to create your account."
+          );
+
+          button.disabled = false;
+          button.textContent = "Create Account";
+
+        }
+
+      }
+    );
+
   </script>
 
 </body>
