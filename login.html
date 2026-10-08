@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IKDA Live | Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(35,105,58,.35), transparent 45%),
+        #07130d;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f2c94c;
+      color: #07130d;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9eaaa2;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      padding: 28px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c7d0ca;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.13);
+      outline: none;
+      background: #0c1d14;
+      color: white;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #f2c94c;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 11px;
+      background: #f2c94c;
+      color: #07130d;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      background: rgba(255,80,80,.1);
+      color: #ff9c9c;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .register {
+      text-align: center;
+      margin-top: 22px;
+      color: #9eaaa2;
+      font-size: 14px;
+    }
+
+    .register a {
+      color: #f2c94c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #7f8d84;
+      text-decoration: none;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">IK</div>
+
+    <h1>Welcome Back</h1>
+
+    <p class="subtitle">
+      Login to your IKDA Live account
+    </p>
+
+    <div class="card">
+
+      <form id="loginForm">
+
+        <label for="email">Email Address</label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+          required
+        >
+
+        <button type="submit" id="loginButton">
+          Login
+        </button>
+
+        <div class="message" id="message"></div>
+
+      </form>
+
+    </div>
+
+    <div class="register">
+      Don't have an account?
+      <a href="register.html">Create Account</a>
+    </div>
+
+    <a href="index.html" class="back">
+      ← Back to IKDA Live
+    </a>
+
+  </div>
+
+
+  <script>
+    /*
+      Supabase authentication will be connected
+      to this page in the next stage.
+    */
+
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const message = document.getElementById("message");
+
+      message.style.display = "block";
+      message.style.background = "rgba(242,201,76,.08)";
+      message.style.color = "#f2c94c";
+      message.textContent =
+        "Authentication connection will be activated when Supabase is connected.";
+    });
+  </script>
+
+</body>
+</html>
