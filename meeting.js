@@ -1,8 +1,3 @@
-// ======================================================
-// IKDA LIVE - AUDIO MEETING ENGINE
-// Supabase Realtime + WebRTC
-// ======================================================
-
 const { createClient } = supabase;
 
 const ikdaSupabase = createClient(
@@ -10,39 +5,33 @@ const ikdaSupabase = createClient(
   SUPABASE_KEY
 );
 
-
-// ------------------------------------------------------
-// Meeting information
-// ------------------------------------------------------
-
-const urlParams =
-  new URLSearchParams(window.location.search);
+// Get room ID
+const urlParams = new URLSearchParams(
+  window.location.search
+);
 
 const roomId =
   urlParams.get("room") || "IKDA-DEMO";
 
 
-// Give every browser a unique participant ID.
+// Unique participant ID
 const participantId =
   crypto.randomUUID();
 
 
-// Store connected participants.
+// WebRTC connections
 const peers = {};
 
 
-// Store our microphone.
+// Local microphone
 let localStream = null;
 
 
-// Supabase Realtime channel.
+// Supabase Realtime channel
 let roomChannel = null;
 
 
-// ------------------------------------------------------
-// WebRTC configuration
-// ------------------------------------------------------
-
+// WebRTC servers
 const rtcConfiguration = {
 
   iceServers: [
@@ -53,6 +42,10 @@ const rtcConfiguration = {
 
     {
       urls: "stun:stun1.l.google.com:19302"
+    },
+
+    {
+      urls: "stun:stun2.l.google.com:19302"
     }
 
   ]
@@ -60,58 +53,46 @@ const rtcConfiguration = {
 };
 
 
-// ------------------------------------------------------
-// Start microphone
-// ------------------------------------------------------
+// ------------------------------------
+// MICROPHONE
+// ------------------------------------
 
 async function startIKDAMicrophone() {
 
-  try {
-
-    localStream =
-      await navigator.mediaDevices.getUserMedia({
-
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        },
-
-        video: false
-
-      });
-
-
-    console.log("IKDA microphone ready.");
-
-    return true;
-
-  } catch (error) {
-
-    console.error(
-      "Microphone error:",
-      error
-    );
-
-    alert(
-      "IKDA Live needs microphone permission to join the audio meeting."
-    );
-
-    return false;
-
+  if (localStream) {
+    return localStream;
   }
 
+  localStream =
+    await navigator.mediaDevices.getUserMedia({
+
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      },
+
+      video: false
+
+    });
+
+  return localStream;
 }
 
 
-// ------------------------------------------------------
-// Create a peer connection
-// ------------------------------------------------------
+// ------------------------------------
+// CREATE PEER CONNECTION
+// ------------------------------------
 
-function createPeerConnection(
+async function createPeerConnection(
   remoteParticipantId,
-  createOffer
+  createOffer = false
 ) {
+
+  if (peers[remoteParticipantId]) {
+    return peers[remoteParticipantId];
+  }
+
 
   const peer =
     new RTCPeerConnection(
@@ -122,12 +103,12 @@ function createPeerConnection(
   peers[remoteParticipantId] = peer;
 
 
-  // Add our microphone to the connection.
+  // Add microphone
   if (localStream) {
 
     localStream
       .getTracks()
-      .forEach(track => {
+      .forEach(function(track) {
 
         peer.addTrack(
           track,
@@ -139,11 +120,14 @@ function createPeerConnection(
   }
 
 
-  // Receive another participant's audio.
+  // Receive remote audio
   peer.ontrack = function(event) {
 
-    const audioStream =
-      event.streams[0];
+    if (!event.streams ||
+        !event.streams[0]) {
+      return;
+    }
+
 
     let audio =
       document.getElementById(
@@ -160,7 +144,6 @@ function createPeerConnection(
         "audio-" + remoteParticipantId;
 
       audio.autoplay = true;
-
       audio.playsInline = true;
 
       document.body.appendChild(audio);
@@ -169,120 +152,174 @@ function createPeerConnection(
 
 
     audio.srcObject =
-      audioStream;
+      event.streams[0];
 
   };
 
 
-  // Send ICE candidates through Supabase.
+  // ICE candidate
   peer.onicecandidate =
-    function(event) {
+    async function(event) {
 
       if (!event.candidate) {
         return;
       }
 
 
-      roomChannel.send({
+      await sendSignal({
 
-        type: "broadcast",
+        type: "ice",
 
-        event: "ice",
+        from: participantId,
 
-        payload: {
+        to: remoteParticipantId,
 
-          from: participantId,
-
-          to: remoteParticipantId,
-
-          candidate:
-            event.candidate
-
-        }
+        candidate:
+          event.candidate
 
       });
 
     };
 
 
-  // Create offer for the new participant.
+  // Connection status
+  peer.onconnectionstatechange =
+    function() {
+
+      console.log(
+        "Connection:",
+        remoteParticipantId,
+        peer.connectionState
+      );
+
+      if (
+        peer.connectionState ===
+          "failed" ||
+
+        peer.connectionState ===
+          "closed"
+      ) {
+
+        closePeer(
+          remoteParticipantId
+        );
+
+      }
+
+    };
+
+
+  // Create offer
   if (createOffer) {
 
-    peer.createOffer()
-      .then(offer => {
+    const offer =
+      await peer.createOffer();
 
-        return peer.setLocalDescription(
-          offer
-        );
+    await peer.setLocalDescription(
+      offer
+    );
 
-      })
-      .then(() => {
 
-        roomChannel.send({
+    await sendSignal({
 
-          type: "broadcast",
+      type: "offer",
 
-          event: "offer",
+      from: participantId,
 
-          payload: {
+      to: remoteParticipantId,
 
-            from: participantId,
+      offer: offer
 
-            to: remoteParticipantId,
-
-            offer:
-              peer.localDescription
-
-          }
-
-        });
-
-      })
-      .catch(error => {
-
-        console.error(
-          "Offer error:",
-          error
-        );
-
-      });
+    });
 
   }
 
 
   return peer;
+}
+
+
+// ------------------------------------
+// SEND SIGNAL
+// ------------------------------------
+
+async function sendSignal(message) {
+
+  if (!roomChannel) {
+    return;
+  }
+
+  try {
+
+    await roomChannel.send({
+
+      type: "broadcast",
+
+      event: message.type,
+
+      payload: message
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Signal error:",
+      error
+    );
+
+  }
 
 }
 
 
-// ------------------------------------------------------
-// Handle incoming offer
-// ------------------------------------------------------
+// ------------------------------------
+// HANDLE JOIN
+// ------------------------------------
 
-async function handleOffer(payload) {
+async function handleJoin(message) {
 
-  const from =
-    payload.from;
-
-
-  let peer =
-    peers[from];
-
-
-  if (!peer) {
-
-    peer =
-      createPeerConnection(
-        from,
-        false
-      );
-
+  if (
+    !message ||
+    message.from === participantId
+  ) {
+    return;
   }
+
+
+  // Existing participant creates offer
+  await createPeerConnection(
+    message.from,
+    true
+  );
+
+}
+
+
+// ------------------------------------
+// HANDLE OFFER
+// ------------------------------------
+
+async function handleOffer(message) {
+
+  if (
+    !message ||
+    message.to !== participantId
+  ) {
+    return;
+  }
+
+
+  const peer =
+    await createPeerConnection(
+      message.from,
+      false
+    );
 
 
   await peer.setRemoteDescription(
     new RTCSessionDescription(
-      payload.offer
+      message.offer
     )
   );
 
@@ -296,36 +333,37 @@ async function handleOffer(payload) {
   );
 
 
-  await roomChannel.send({
+  await sendSignal({
 
-    type: "broadcast",
+    type: "answer",
 
-    event: "answer",
+    from: participantId,
 
-    payload: {
+    to: message.from,
 
-      from: participantId,
-
-      to: from,
-
-      answer:
-        peer.localDescription
-
-    }
+    answer: answer
 
   });
 
 }
 
 
-// ------------------------------------------------------
-// Handle incoming answer
-// ------------------------------------------------------
+// ------------------------------------
+// HANDLE ANSWER
+// ------------------------------------
 
-async function handleAnswer(payload) {
+async function handleAnswer(message) {
+
+  if (
+    !message ||
+    message.to !== participantId
+  ) {
+    return;
+  }
+
 
   const peer =
-    peers[payload.from];
+    peers[message.from];
 
 
   if (!peer) {
@@ -336,7 +374,7 @@ async function handleAnswer(payload) {
   await peer.setRemoteDescription(
 
     new RTCSessionDescription(
-      payload.answer
+      message.answer
     )
 
   );
@@ -344,14 +382,22 @@ async function handleAnswer(payload) {
 }
 
 
-// ------------------------------------------------------
-// Handle ICE candidate
-// ------------------------------------------------------
+// ------------------------------------
+// HANDLE ICE
+// ------------------------------------
 
-async function handleIce(payload) {
+async function handleIce(message) {
+
+  if (
+    !message ||
+    message.to !== participantId
+  ) {
+    return;
+  }
+
 
   const peer =
-    peers[payload.from];
+    peers[message.from];
 
 
   if (!peer) {
@@ -362,11 +408,9 @@ async function handleIce(payload) {
   try {
 
     await peer.addIceCandidate(
-
       new RTCIceCandidate(
-        payload.candidate
+        message.candidate
       )
-
     );
 
   } catch (error) {
@@ -381,15 +425,17 @@ async function handleIce(payload) {
 }
 
 
-// ------------------------------------------------------
-// Connect to Supabase Realtime room
-// ------------------------------------------------------
+// ------------------------------------
+// CONNECT TO ROOM
+// ------------------------------------
 
 async function connectToIKDARoom() {
 
   roomChannel =
     ikdaSupabase.channel(
+
       "ikda-audio-room-" + roomId,
+
       {
         config: {
           broadcast: {
@@ -397,9 +443,11 @@ async function connectToIKDARoom() {
           }
         }
       }
+
     );
 
 
+  // New participant
   roomChannel.on(
 
     "broadcast",
@@ -408,25 +456,10 @@ async function connectToIKDARoom() {
       event: "join"
     },
 
-    payload => {
+    function(payload) {
 
-      const participant =
-        payload.payload;
-
-
-      if (
-        !participant ||
-        participant.id === participantId
-      ) {
-        return;
-      }
-
-
-      // The existing participant creates
-      // an offer for the newcomer.
-      createPeerConnection(
-        participant.id,
-        true
+      handleJoin(
+        payload.payload
       );
 
     }
@@ -434,6 +467,7 @@ async function connectToIKDARoom() {
   );
 
 
+  // Offer
   roomChannel.on(
 
     "broadcast",
@@ -442,26 +476,18 @@ async function connectToIKDARoom() {
       event: "offer"
     },
 
-    async payload => {
+    function(payload) {
 
-      const data =
-        payload.payload;
-
-
-      if (
-        data.to !== participantId
-      ) {
-        return;
-      }
-
-
-      await handleOffer(data);
+      handleOffer(
+        payload.payload
+      );
 
     }
 
   );
 
 
+  // Answer
   roomChannel.on(
 
     "broadcast",
@@ -470,26 +496,18 @@ async function connectToIKDARoom() {
       event: "answer"
     },
 
-    async payload => {
+    function(payload) {
 
-      const data =
-        payload.payload;
-
-
-      if (
-        data.to !== participantId
-      ) {
-        return;
-      }
-
-
-      await handleAnswer(data);
+      handleAnswer(
+        payload.payload
+      );
 
     }
 
   );
 
 
+  // ICE
   roomChannel.on(
 
     "broadcast",
@@ -498,82 +516,132 @@ async function connectToIKDARoom() {
       event: "ice"
     },
 
-    async payload => {
+    function(payload) {
 
-      const data =
-        payload.payload;
-
-
-      if (
-        data.to !== participantId
-      ) {
-        return;
-      }
-
-
-      await handleIce(data);
+      handleIce(
+        payload.payload
+      );
 
     }
 
   );
 
 
-  const status =
-    await roomChannel.subscribe();
+  // Subscribe
+  await new Promise(
+    function(resolve, reject) {
+
+      roomChannel.subscribe(
+        function(status) {
+
+          console.log(
+            "Room status:",
+            status
+          );
 
 
-  if (status !== "SUBSCRIBED") {
+          if (
+            status ===
+            "SUBSCRIBED"
+          ) {
 
-    console.error(
-      "Unable to connect to IKDA room:",
-      status
-    );
+            resolve();
 
-    return false;
-
-  }
+          }
 
 
-  // Announce ourselves.
-  await roomChannel.send({
+          if (
+            status ===
+            "CHANNEL_ERROR"
+          ) {
 
-    type: "broadcast",
+            reject(
+              new Error(
+                "Unable to connect to meeting room."
+              )
+            );
 
-    event: "join",
+          }
 
-    payload: {
-
-      id:
-        participantId
+        }
+      );
 
     }
+  );
+
+
+  // Tell everyone we joined
+  await sendSignal({
+
+    type: "join",
+
+    from: participantId
 
   });
-
-
-  console.log(
-    "Connected to IKDA audio room:",
-    roomId
-  );
-
-
-  return true;
 
 }
 
 
-// ------------------------------------------------------
-// Leave meeting
-// ------------------------------------------------------
+// ------------------------------------
+// START LIVE MEETING
+// ------------------------------------
+
+async function startIKDALive() {
+
+  await startIKDAMicrophone();
+
+  await connectToIKDARoom();
+
+}
+
+
+// ------------------------------------
+// CLOSE PEER
+// ------------------------------------
+
+function closePeer(
+  remoteParticipantId
+) {
+
+  const peer =
+    peers[remoteParticipantId];
+
+
+  if (peer) {
+
+    peer.close();
+
+    delete peers[
+      remoteParticipantId
+    ];
+
+  }
+
+
+  const audio =
+    document.getElementById(
+      "audio-" +
+      remoteParticipantId
+    );
+
+
+  if (audio) {
+    audio.remove();
+  }
+
+}
+
+
+// ------------------------------------
+// LEAVE MEETING
+// ------------------------------------
 
 async function leaveIKDAMeeting() {
 
-  Object.values(peers)
-    .forEach(peer => {
+  Object.keys(peers)
+    .forEach(function(id) {
 
-      try {
-        peer.close();
-      } catch (_) {}
+      closePeer(id);
 
     });
 
@@ -582,70 +650,33 @@ async function leaveIKDAMeeting() {
 
     localStream
       .getTracks()
-      .forEach(track => track.stop());
+      .forEach(function(track) {
+
+        track.stop();
+
+      });
+
+    localStream = null;
 
   }
 
 
   if (roomChannel) {
 
-    await ikdaSupabase.removeChannel(
-      roomChannel
-    );
+    try {
 
-  }
+      await ikdaSupabase.removeChannel(
+        roomChannel
+      );
 
-}
+    } catch (error) {
 
-
-// ------------------------------------------------------
-// Start everything
-// ------------------------------------------------------
-
-async function startIKDALive() {
-
-  const microphoneReady =
-    await startIKDAMicrophone();
-
-
-  if (!microphoneReady) {
-    return;
-  }
-
-
-  const connected =
-    await connectToIKDARoom();
-
-
-  if (!connected) {
-
-    alert(
-      "Unable to connect to the IKDA Live room."
-    );
-
-    return;
-
-  }
-
-}
-
-
-// Automatically start.
-startIKDALive();
-
-
-// Clean up when leaving.
-window.addEventListener(
-  "beforeunload",
-  function() {
-
-    if (localStream) {
-
-      localStream
-        .getTracks()
-        .forEach(track => track.stop());
+      console.error(error);
 
     }
 
+    roomChannel = null;
+
   }
-);
+
+}
