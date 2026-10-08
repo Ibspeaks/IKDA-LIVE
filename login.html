@@ -3,21 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>IKDA LIVE - Member Login</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       font-family: Arial, sans-serif;
     }
 
     body {
+      margin: 0;
       min-height: 100vh;
       background: linear-gradient(135deg, #063b2b, #0b5d43);
       display: flex;
@@ -32,7 +29,7 @@
       background: white;
       border-radius: 18px;
       padding: 30px 24px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      box-shadow: 0 15px 40px rgba(0,0,0,.25);
     }
 
     .logo {
@@ -41,6 +38,7 @@
     }
 
     .logo h1 {
+      margin: 0;
       color: #087443;
       font-size: 32px;
     }
@@ -48,8 +46,7 @@
     .logo p {
       color: #b58a18;
       font-weight: bold;
-      margin-top: 5px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     h2 {
@@ -62,7 +59,6 @@
       display: block;
       margin: 14px 0 6px;
       font-weight: bold;
-      color: #333;
     }
 
     input {
@@ -71,18 +67,13 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 16px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #087443;
     }
 
     button {
       width: 100%;
-      padding: 15px;
       margin-top: 22px;
-      border: none;
+      padding: 15px;
+      border: 0;
       border-radius: 10px;
       background: #087443;
       color: white;
@@ -91,17 +82,16 @@
     }
 
     button:disabled {
-      background: #888;
+      opacity: .6;
     }
 
     #message {
       display: none;
       margin-top: 18px;
-      padding: 13px;
-      border-radius: 9px;
+      padding: 14px;
+      border-radius: 10px;
       text-align: center;
       line-height: 1.5;
-      font-size: 14px;
     }
 
     .success {
@@ -116,180 +106,175 @@
       color: #b00020;
     }
 
-    .register {
+    .links {
       text-align: center;
       margin-top: 20px;
-      color: #444;
     }
 
-    .register a {
+    .links a {
       color: #087443;
       font-weight: bold;
       text-decoration: none;
-    }
-
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      color: #087443;
-      text-decoration: none;
-      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
+<div class="box">
 
-    <div class="logo">
-      <h1>IKDA LIVE</h1>
-      <p>Igala Kingdom Descendant Association</p>
-    </div>
-
-    <h2>Member Login</h2>
-
-    <form id="loginForm">
-
-      <label for="email">Email Address</label>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        autocomplete="email"
-        required
-      >
-
-      <label for="password">Password</label>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter your password"
-        autocomplete="current-password"
-        required
-      >
-
-      <button type="submit" id="loginButton">
-        Login
-      </button>
-
-    </form>
-
-    <div id="message"></div>
-
-    <div class="register">
-      Don't have an account?
-      <a href="register.html">Create Account</a>
-    </div>
-
-    <a class="back" href="index.html">
-      ← Back to Home
-    </a>
-
+  <div class="logo">
+    <h1>IKDA LIVE</h1>
+    <p>Igala Kingdom Descendant Association</p>
   </div>
 
-  <script>
+  <h2>Member Login</h2>
 
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+  <form id="loginForm">
+
+    <label>Email Address</label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email"
+      required
+    >
+
+    <label>Password</label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter your password"
+      required
+    >
+
+    <button type="submit" id="loginButton">
+      Login
+    </button>
+
+  </form>
+
+  <div id="message"></div>
+
+  <div class="links">
+    Don't have an account?
+    <a href="register.html">Create Account</a>
+    <br><br>
+    <a href="index.html">← Back to Home</a>
+  </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+"https://dvskuudjamineqbvvjld.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_r8v8E93qy_DpvNhL9pvyKQ_HZBLaBm5";
+
+const supabaseClient =
+supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const form =
+document.getElementById("loginForm");
+
+const button =
+document.getElementById("loginButton");
+
+const message =
+document.getElementById("message");
+
+function showMessage(text, type) {
+  message.textContent = text;
+  message.className = type;
+}
+
+form.addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  if (!email || !password) {
+    showMessage(
+      "Please enter your email and password.",
+      "error"
     );
+    return;
+  }
 
-    const form = document.getElementById("loginForm");
-    const button = document.getElementById("loginButton");
-    const message = document.getElementById("message");
+  button.disabled = true;
+  button.textContent = "Logging in...";
 
-    function showMessage(text, type) {
-      message.textContent = text;
-      message.className = type;
+  showMessage(
+    "Connecting to IKDA LIVE...",
+    "success"
+  );
+
+  try {
+
+    const result =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (result.error) {
+
+      showMessage(
+        "Login failed: " + result.error.message,
+        "error"
+      );
+
+      button.disabled = false;
+      button.textContent = "Login";
+
+      return;
     }
 
-    form.addEventListener("submit", async function(event) {
+    if (result.data.session) {
 
-      event.preventDefault();
+      showMessage(
+        "Login successful! Opening dashboard...",
+        "success"
+      );
 
-      const email =
-        document.getElementById("email").value.trim();
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
 
-      const password =
-        document.getElementById("password").value;
+    } else {
 
-      if (!email || !password) {
-        showMessage(
-          "Please enter your email and password.",
-          "error"
-        );
-        return;
-      }
+      showMessage(
+        "Login was completed but no session was returned.",
+        "error"
+      );
 
-      button.disabled = true;
-      button.textContent = "Logging in...";
+      button.disabled = false;
+      button.textContent = "Login";
+    }
 
-      try {
+  } catch (error) {
 
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
+    showMessage(
+      "Connection error: " + error.message,
+      "error"
+    );
 
-        console.log("Login response:", data);
-        console.log("Login error:", error);
+    button.disabled = false;
+    button.textContent = "Login";
+  }
 
-        if (error) {
+});
 
-          showMessage(
-            "Login failed: " + error.message,
-            "error"
-          );
-
-          button.disabled = false;
-          button.textContent = "Login";
-
-          return;
-        }
-
-        if (data.session) {
-
-          showMessage(
-            "Login successful! Opening dashboard...",
-            "success"
-          );
-
-          setTimeout(function() {
-            window.location.href = "dashboard.html";
-          }, 1000);
-
-        } else {
-
-          showMessage(
-            "Login did not create a session. Please try again.",
-            "error"
-          );
-
-          button.disabled = false;
-          button.textContent = "Login";
-        }
-
-      } catch (err) {
-
-        console.error(err);
-
-        showMessage(
-          "Something went wrong: " + err.message,
-          "error"
-        );
-
-        button.disabled = false;
-        button.textContent = "Login";
-      }
-
-    });
-
-  </script>
+</script>
 
 </body>
 </html>
