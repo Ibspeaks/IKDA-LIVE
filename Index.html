@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IKDA Live | Igala Kingdom Descendant Association</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #07130d;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(5, 18, 11, 0.95);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d6a52c, #f4d477);
+      color: #092013;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 0 20px rgba(214,165,44,0.25);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 18px;
+      color: #f2c94c;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 3px;
+      font-size: 9px;
+      color: #aeb9b2;
+      letter-spacing: 1px;
+    }
+
+    .login-btn {
+      text-decoration: none;
+      color: #07130d;
+      background: #f2c94c;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: calc(100vh - 85px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 70px 20px;
+      background:
+        radial-gradient(circle at top, rgba(36,105,59,0.35), transparent 45%),
+        #07130d;
+    }
+
+    .hero-content {
+      width: 100%;
+      max-width: 850px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 15px;
+      border: 1px solid rgba(242,201,76,0.35);
+      border-radius: 30px;
+      color: #f2c94c;
+      background: rgba(242,201,76,0.06);
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 9vw, 82px);
+      line-height: 0.98;
+      margin-bottom: 25px;
+      letter-spacing: -3px;
+    }
+
+    h1 span {
+      color: #f2c94c;
+    }
+
+    .description {
+      max-width: 650px;
+      margin: auto;
+      color: #b9c4bd;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .buttons {
+      margin-top: 35px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .primary,
+    .secondary {
+      border: none;
+      text-decoration: none;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #f2c94c;
+      color: #07130d;
+    }
+
+    .secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .features {
+      margin-top: 70px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      text-align: left;
+    }
+
+    .feature {
+      padding: 24px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #9daaa2;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 30px 20px;
+      text-align: center;
+      color: #748078;
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    @media (max-width: 700px) {
+      header {
+        padding: 15px 4%;
+      }
+
+      .brand-text span {
+        font-size: 7px;
+      }
+
+      .login-btn {
+        padding: 9px 13px;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 55px 18px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .description {
+        font-size: 15px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+        margin-top: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">IK</div>
+
+      <div class="brand-text">
+        <strong>IKDA LIVE</strong>
+        <span>IGALA KINGDOM DESCENDANT ASSOCIATION</span>
+      </div>
+    </div>
+
+    <a href="login.html" class="login-btn">
+      Login
+    </a>
+  </header>
+
+
+  <main class="hero">
+
+    <div class="hero-content">
+
+      <div class="badge">
+        🎙️ AUDIO COMMUNITY PLATFORM
+      </div>
+
+      <h1>
+        Meet.<br>
+        Connect.<br>
+        <span>Build Together.</span>
+      </h1>
+
+      <p class="description">
+        Welcome to IKDA Live — a dedicated digital meeting platform
+        created for members and descendants of the Igala Kingdom.
+        Connect with your people through live audio meetings from
+        anywhere.
+      </p>
+
+
+      <div class="buttons">
+
+        <a href="register.html" class="primary">
+          Create Account
+        </a>
+
+        <a href="login.html" class="secondary">
+          Join Meeting
+        </a>
+
+      </div>
+
+
+      <div class="features">
+
+        <div class="feature">
+          <div class="feature-icon">🎙️</div>
+
+          <h3>Live Audio Meetings</h3>
+
+          <p>
+            Hold live audio meetings and communicate with
+            other IKDA members in real time.
+          </p>
+        </div>
+
+
+        <div class="feature">
+          <div class="feature-icon">🔐</div>
+
+          <h3>Secure Accounts</h3>
+
+          <p>
+            Create your personal account and securely access
+            the IKDA Live platform.
+          </p>
+        </div>
+
+
+        <div class="feature">
+          <div class="feature-icon">🌍</div>
+
+          <h3>Connect Anywhere</h3>
+
+          <p>
+            Join an IKDA meeting from your phone, tablet or
+            computer wherever you are.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <footer>
+    © 2026 IKDA Live · Igala Kingdom Descendant Association
+  </footer>
+
+</body>
+</html>
