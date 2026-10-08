@@ -3,308 +3,314 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IKDA Live - Create Account</title>
+  <title>IKDA LIVE - Create Account</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      background: #071f16;
-      color: white;
+      background: linear-gradient(135deg, #063b2b, #0b5d43);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
+      color: white;
     }
 
     .box {
       width: 100%;
       max-width: 430px;
-      background: #0d3325;
-      border: 1px solid #d4af37;
-      border-radius: 20px;
-      padding: 30px 25px;
+      background: #ffffff;
+      color: #222;
+      border-radius: 18px;
+      padding: 30px 24px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     }
 
     .logo {
       text-align: center;
-      color: #d4af37;
-      font-size: 28px;
-      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #b9c9c1;
-      font-size: 13px;
-      margin: 8px 0 25px;
+    .logo h1 {
+      color: #087443;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .logo p {
+      color: #b58a18;
+      font-weight: bold;
+      margin-top: 5px;
     }
 
     h2 {
       text-align: center;
-      color: #d4af37;
-      margin-bottom: 25px;
+      margin: 20px 0;
+      color: #063b2b;
     }
 
     label {
       display: block;
-      margin-bottom: 7px;
-      font-size: 14px;
+      margin: 14px 0 6px;
+      font-weight: bold;
+      color: #333;
     }
 
     input {
       width: 100%;
       padding: 14px;
-      margin-bottom: 16px;
+      border: 1px solid #ccc;
       border-radius: 10px;
-      border: 1px solid #557568;
-      background: #071f16;
-      color: white;
       font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #087443;
     }
 
     button {
       width: 100%;
       padding: 15px;
-      border: 0;
+      margin-top: 22px;
+      border: none;
       border-radius: 10px;
-      background: #d4af37;
-      color: #071f16;
-      font-size: 16px;
+      background: #087443;
+      color: white;
+      font-size: 17px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     button:disabled {
-      opacity: .6;
+      background: #888;
     }
 
-    #message {
-      text-align: center;
+    .message {
+      display: none;
       margin-top: 18px;
+      padding: 13px;
+      border-radius: 9px;
+      text-align: center;
       line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .success {
+      display: block;
+      background: #e7f7ed;
+      color: #146c36;
+    }
+
+    .error {
+      display: block;
+      background: #ffe9e9;
+      color: #b00020;
     }
 
     .login {
       text-align: center;
-      margin-top: 22px;
-      color: #b9c9c1;
+      margin-top: 20px;
     }
 
-    a {
-      color: #d4af37;
-      text-decoration: none;
+    .login a {
+      color: #087443;
       font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
 
-<div class="box">
+  <div class="box">
 
-  <div class="logo">IKDA LIVE</div>
+    <div class="logo">
+      <h1>IKDA LIVE</h1>
+      <p>Igala Kingdom Descendant Association</p>
+    </div>
 
-  <div class="subtitle">
-    IGALA KINGDOM DESCENDANT ASSOCIATION
+    <h2>Create Account</h2>
+
+    <form id="registerForm">
+
+      <label for="name">Full Name</label>
+      <input
+        type="text"
+        id="name"
+        placeholder="Enter your full name"
+        required
+      >
+
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Create a password"
+        minlength="6"
+        required
+      >
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Confirm your password"
+        minlength="6"
+        required
+      >
+
+      <button type="submit" id="registerButton">
+        Create Account
+      </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="login">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+
   </div>
 
-  <h2>Create Account</h2>
+  <script>
 
-  <form id="registerForm">
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-    <label>Full Name</label>
+    const form = document.getElementById("registerForm");
+    const button = document.getElementById("registerButton");
+    const message = document.getElementById("message");
 
-    <input
-      id="name"
-      type="text"
-      placeholder="Enter your full name"
-      required
-    >
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
 
-    <label>Email Address</label>
+    form.addEventListener("submit", async function(event) {
 
-    <input
-      id="email"
-      type="email"
-      placeholder="Enter your email"
-      required
-    >
+      event.preventDefault();
 
-    <label>Password</label>
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Minimum 6 characters"
-      minlength="6"
-      required
-    >
+      message.className = "message";
+      message.textContent = "";
 
-    <label>Confirm Password</label>
+      if (!name || !email || !password || !confirmPassword) {
+        showMessage("Please fill in all the fields.", "error");
+        return;
+      }
 
-    <input
-      id="confirmPassword"
-      type="password"
-      placeholder="Confirm password"
-      minlength="6"
-      required
-    >
+      if (password.length < 6) {
+        showMessage(
+          "Password must be at least 6 characters.",
+          "error"
+        );
+        return;
+      }
 
-    <button id="registerButton" type="submit">
-      CREATE ACCOUNT
-    </button>
+      if (password !== confirmPassword) {
+        showMessage(
+          "Passwords do not match.",
+          "error"
+        );
+        return;
+      }
 
-  </form>
+      button.disabled = true;
+      button.textContent = "Creating Account...";
 
-  <div id="message"></div>
+      try {
 
-  <div class="login">
-    Already have an account?
-    <a href="login.html">Login</a>
-  </div>
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: {
+                full_name: name
+              }
+            }
+          });
 
-</div>
+        console.log("Supabase response:", data);
+        console.log("Supabase error:", error);
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+        if (error) {
+          showMessage(
+            "Registration failed: " + error.message,
+            "error"
+          );
 
-<script>
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const form =
-  document.getElementById("registerForm");
-
-const button =
-  document.getElementById("registerButton");
-
-const message =
-  document.getElementById("message");
-
-
-form.addEventListener("submit", async function(e) {
-
-  e.preventDefault();
-
-  const name =
-    document.getElementById("name").value.trim();
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  const password =
-    document.getElementById("password").value;
-
-  const confirmPassword =
-    document.getElementById("confirmPassword").value;
-
-
-  if (password !== confirmPassword) {
-
-    message.style.color = "#ff8b8b";
-
-    message.textContent =
-      "Passwords do not match.";
-
-    return;
-  }
-
-
-  button.disabled = true;
-
-  button.textContent =
-    "CREATING ACCOUNT...";
-
-  message.textContent = "";
-
-
-  try {
-
-    const { data, error } =
-      await supabaseClient.auth.signUp({
-
-        email: email,
-
-        password: password,
-
-        options: {
-          data: {
-            full_name: name
-          }
+          button.disabled = false;
+          button.textContent = "Create Account";
+          return;
         }
 
-      });
+        if (data.session) {
 
+          showMessage(
+            "Account created successfully! Opening your dashboard...",
+            "success"
+          );
 
-    if (error) {
-      throw error;
-    }
+          setTimeout(function() {
+            window.location.href = "dashboard.html";
+          }, 1200);
 
+        } else {
 
-    /*
-      If Supabase returns a session,
-      the user is already logged in.
-    */
+          showMessage(
+            "Account created successfully! Please check your email and verify your account before logging in.",
+            "success"
+          );
 
-    if (data.session) {
+          button.disabled = false;
+          button.textContent = "Create Account";
+        }
 
-      message.style.color = "#7ff0a8";
+      } catch (err) {
 
-      message.textContent =
-        "Account created successfully. Opening your dashboard...";
+        console.error(err);
 
-      setTimeout(function() {
+        showMessage(
+          "Something went wrong: " + err.message,
+          "error"
+        );
 
-        window.location.href =
-          "dashboard.html";
+        button.disabled = false;
+        button.textContent = "Create Account";
+      }
 
-      }, 1000);
+    });
 
-      return;
-    }
-
-
-    /*
-      No session normally means
-      email confirmation is required.
-    */
-
-    message.style.color = "#d4af37";
-
-    message.textContent =
-      "Account created successfully. Please check your email, verify your account, then login.";
-
-    button.disabled = false;
-
-    button.textContent =
-      "ACCOUNT CREATED";
-
-
-  } catch (error) {
-
-    message.style.color = "#ff8b8b";
-
-    message.textContent =
-      error.message;
-
-    button.disabled = false;
-
-    button.textContent =
-      "CREATE ACCOUNT";
-
-  }
-
-});
-
-</script>
+  </script>
 
 </body>
 </html>
