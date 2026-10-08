@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IKDA Live | Create Account</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(35,105,58,.35), transparent 45%),
+        #07130d;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f2c94c;
+      color: #07130d;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9eaaa2;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      padding: 28px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c7d0ca;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.13);
+      outline: none;
+      background: #0c1d14;
+      color: white;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #f2c94c;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 11px;
+      background: #f2c94c;
+      color: #07130d;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .login {
+      text-align: center;
+      margin-top: 22px;
+      color: #9eaaa2;
+      font-size: 14px;
+    }
+
+    .login a {
+      color: #f2c94c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #7f8d84;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .terms {
+      color: #758179;
+      font-size: 11px;
+      line-height: 1.5;
+      margin: -4px 0 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">IK</div>
+
+    <h1>Create Account</h1>
+
+    <p class="subtitle">
+      Join the IKDA Live community
+    </p>
+
+    <div class="card">
+
+      <form id="registerForm">
+
+        <label for="name">Full Name</label>
+
+        <input
+          type="text"
+          id="name"
+          placeholder="Enter your full name"
+          required
+        >
+
+        <label for="email">Email Address</label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Create a password"
+          minlength="6"
+          required
+        >
+
+        <label for="confirmPassword">Confirm Password</label>
+
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm your password"
+          minlength="6"
+          required
+        >
+
+        <p class="terms">
+          By creating an account, you agree to use IKDA Live
+          responsibly and respectfully.
+        </p>
+
+        <button type="submit" id="registerButton">
+          Create Account
+        </button>
+
+        <div class="message" id="message"></div>
+
+      </form>
+
+    </div>
+
+    <div class="login">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+
+    <a href="index.html" class="back">
+      ← Back to IKDA Live
+    </a>
+
+  </div>
+
+
+  <script>
+    /*
+      Supabase registration will be connected
+      to this page in the next stage.
+    */
+
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const password =
+        document.getElementById("password").value;
+
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+      const message =
+        document.getElementById("message");
+
+      message.style.display = "block";
+
+      if (password !== confirmPassword) {
+        message.style.background = "rgba(255,80,80,.1)";
+        message.style.color = "#ff9c9c";
+        message.textContent =
+          "Passwords do not match.";
+        return;
+      }
+
+      message.style.background = "rgba(242,201,76,.08)";
+      message.style.color = "#f2c94c";
+      message.textContent =
+        "Registration connection will be activated when Supabase is connected.";
+    });
+  </script>
+
+</body>
+</html>
