@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IKDA Live Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #071f16;
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #0b2e21;
+      padding: 18px;
+      border-bottom: 1px solid #c9a227;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      color: #d4af37;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .logout {
+      background: transparent;
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    .welcome {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .welcome h1 {
+      color: #d4af37;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #c9d5cf;
+    }
+
+    .card {
+      background: #0d3325;
+      border: 1px solid #28533f;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      color: #d4af37;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #c9d5cf;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #d4af37;
+      color: #071f16;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #557568;
+      background: #071f16;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 12px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .info {
+      text-align: center;
+      margin-top: 25px;
+      color: #9fb2a8;
+      font-size: 13px;
+    }
+
+    .error {
+      color: #ff8b8b;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">IKDA LIVE</div>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+  <div class="welcome">
+    <h1 id="welcomeName">Welcome</h1>
+    <p>Igala Kingdom Descendant Association</p>
+  </div>
+
+  <div class="card">
+    <h2>🎙️ Create a Meeting</h2>
+    <p>
+      Start a new IKDA audio meeting and share the meeting ID with other members.
+    </p>
+
+    <button onclick="createMeeting()">
+      CREATE MEETING
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>🔊 Join a Meeting</h2>
+    <p>
+      Enter the meeting ID given to you by the meeting host.
+    </p>
+
+    <input
+      type="text"
+      id="meetingId"
+      placeholder="Example: IKDA-ABC123"
+      maxlength="12"
+    >
+
+    <button onclick="joinMeeting()">
+      JOIN MEETING
+    </button>
+
+    <div class="error" id="errorMessage">
+      Please enter a valid IKDA meeting ID.
+    </div>
+  </div>
+
+  <div class="info">
+    IKDA Live • Audio Meetings
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+
+  const { createClient } = supabase;
+
+  const supabaseClient = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  // Check login
+  async function checkLogin() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const user = session.user;
+
+    const name =
+      user.user_metadata?.full_name ||
+      user.email?.split("@")[0] ||
+      "IKDA Member";
+
+    document.getElementById("welcomeName").textContent =
+      "Welcome, " + name;
+  }
+
+  // Create meeting
+  function createMeeting() {
+
+    const randomPart = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase();
+
+    const meetingId = "IKDA-" + randomPart;
+
+    window.location.href =
+      "meeting.html?room=" +
+      encodeURIComponent(meetingId);
+  }
+
+  // Join meeting
+  function joinMeeting() {
+
+    const input =
+      document.getElementById("meetingId");
+
+    const error =
+      document.getElementById("errorMessage");
+
+    let meetingId =
+      input.value.trim().toUpperCase();
+
+    meetingId = meetingId.replace(/\s+/g, "");
+
+    if (!meetingId.startsWith("IKDA-") ||
+        meetingId.length < 8) {
+
+      error.style.display = "block";
+      return;
+    }
+
+    error.style.display = "none";
+
+    window.location.href =
+      "meeting.html?room=" +
+      encodeURIComponent(meetingId);
+  }
+
+  // Logout
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "index.html";
+  }
+
+  checkLogin();
+
+</script>
+
+</body>
+</html>
