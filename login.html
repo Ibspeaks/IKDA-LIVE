@@ -3,73 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IKDA Live | Login</title>
+
+  <title>IKDA Live Login</title>
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
+      background: #071f16;
+      color: white;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      color: white;
-      background:
-        radial-gradient(circle at top, rgba(35,105,58,.35), transparent 45%),
-        #07130d;
     }
 
-    .container {
+    .box {
       width: 100%;
-      max-width: 430px;
+      max-width: 420px;
+      background: #0d3325;
+      border: 1px solid #c9a227;
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     .logo {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f2c94c;
-      color: #07130d;
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    h1 {
       text-align: center;
-      font-size: 30px;
+      color: #d4af37;
+      font-size: 28px;
+      font-weight: bold;
       margin-bottom: 8px;
     }
 
     .subtitle {
       text-align: center;
-      color: #9eaaa2;
-      font-size: 14px;
+      color: #b9c9c1;
       margin-bottom: 30px;
+      font-size: 14px;
     }
 
-    .card {
-      padding: 28px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.09);
+    h2 {
+      text-align: center;
+      color: #d4af37;
+      margin-bottom: 25px;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
-      color: #c7d0ca;
-      font-size: 13px;
-      font-weight: bold;
+      margin-bottom: 7px;
+      color: #dce7e1;
+      font-size: 14px;
     }
 
     input {
@@ -77,51 +67,50 @@
       padding: 14px;
       margin-bottom: 18px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.13);
-      outline: none;
-      background: #0c1d14;
+      border: 1px solid #557568;
+      background: #071f16;
       color: white;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     input:focus {
-      border-color: #f2c94c;
+      outline: none;
+      border-color: #d4af37;
     }
 
     button {
       width: 100%;
       padding: 15px;
       border: none;
-      border-radius: 11px;
-      background: #f2c94c;
-      color: #07130d;
+      border-radius: 10px;
+      background: #d4af37;
+      color: #071f16;
+      font-size: 16px;
       font-weight: bold;
-      font-size: 15px;
       cursor: pointer;
     }
 
     button:disabled {
-      opacity: .6;
+      opacity: 0.6;
     }
 
     .message {
-      display: none;
+      text-align: center;
       margin-top: 15px;
-      padding: 12px;
-      border-radius: 9px;
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 14px;
+      color: #ff9c9c;
+      min-height: 20px;
     }
 
     .register {
       text-align: center;
-      margin-top: 22px;
-      color: #9eaaa2;
+      margin-top: 25px;
+      color: #b9c9c1;
       font-size: 14px;
     }
 
     .register a {
-      color: #f2c94c;
+      color: #d4af37;
       text-decoration: none;
       font-weight: bold;
     }
@@ -129,180 +118,118 @@
     .back {
       display: block;
       text-align: center;
-      margin-top: 18px;
-      color: #7f8d84;
+      margin-top: 20px;
+      color: #9fb2a8;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="box">
 
-    <div class="logo">IK</div>
+  <div class="logo">IKDA LIVE</div>
 
-    <h1>Welcome Back</h1>
-
-    <p class="subtitle">
-      Login to your IKDA Live account
-    </p>
-
-    <div class="card">
-
-      <form id="loginForm">
-
-        <label for="email">Email Address</label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          required
-        >
-
-        <label for="password">Password</label>
-
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your password"
-          required
-        >
-
-        <button type="submit" id="loginButton">
-          Login
-        </button>
-
-        <div class="message" id="message"></div>
-
-      </form>
-
-    </div>
-
-    <div class="register">
-      Don't have an account?
-      <a href="register.html">Create Account</a>
-    </div>
-
-    <a href="index.html" class="back">
-      ← Back to IKDA Live
-    </a>
-
+  <div class="subtitle">
+    IGALA KINGDOM DESCENDANT ASSOCIATION
   </div>
 
+  <h2>Member Login</h2>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <form id="loginForm">
 
-  <!-- Our Supabase settings -->
-  <script src="supabase-config.js"></script>
+    <label>Email Address</label>
 
-  <script>
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email"
+      required
+    >
 
-    const { createClient } = supabase;
+    <label>Password</label>
 
-    const supabaseClient = createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter your password"
+      required
+    >
 
+    <button type="submit" id="loginButton">
+      LOGIN
+    </button>
 
-    const form =
-      document.getElementById("loginForm");
+  </form>
 
-    const button =
-      document.getElementById("loginButton");
+  <div class="message" id="message"></div>
 
-    const message =
-      document.getElementById("message");
+  <div class="register">
+    Don't have an account?
+    <a href="register.html">Create Account</a>
+  </div>
 
+  <a class="back" href="index.html">
+    ← Back to IKDA Live
+  </a>
 
-    function showMessage(text, success = false) {
+</div>
 
-      message.style.display = "block";
-      message.textContent = text;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 
-      if (success) {
+<script>
 
-        message.style.background =
-          "rgba(70,200,110,.10)";
+  const { createClient } = supabase;
 
-        message.style.color =
-          "#7be495";
+  const supabaseClient = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-      } else {
+  const form = document.getElementById("loginForm");
+  const button = document.getElementById("loginButton");
+  const message = document.getElementById("message");
 
-        message.style.background =
-          "rgba(255,80,80,.10)";
+  form.addEventListener("submit", async function(event) {
 
-        message.style.color =
-          "#ff9c9c";
-      }
+    event.preventDefault();
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    message.textContent = "";
+    button.disabled = true;
+    button.textContent = "LOGGING IN...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+
+      message.textContent =
+        error.message;
+
+      button.disabled = false;
+      button.textContent = "LOGIN";
+
+      return;
     }
 
+    // Login successful
+    window.location.href = "dashboard.html";
 
-    form.addEventListener("submit", async function(event) {
+  });
 
-      event.preventDefault();
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const password =
-        document.getElementById("password").value;
-
-
-      button.disabled = true;
-      button.textContent = "Logging in...";
-
-      message.style.display = "none";
-
-
-      try {
-
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        showMessage(
-          "Login successful. Opening IKDA Live...",
-          true
-        );
-
-
-        setTimeout(function() {
-
-          window.location.href =
-            "meeting.html";
-
-        }, 1000);
-
-
-      } catch (error) {
-
-        showMessage(
-          error.message ||
-          "Unable to login. Please check your details."
-        );
-
-        button.disabled = false;
-        button.textContent = "Login";
-
-      }
-
-    });
-
-  </script>
+</script>
 
 </body>
 </html>
