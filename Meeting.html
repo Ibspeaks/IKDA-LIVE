@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IKDA Live | Audio Meeting</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #07130d;
+      color: white;
+    }
+
+    header {
+      height: 70px;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: #091910;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f2c94c;
+      color: #07130d;
+      font-weight: 900;
+    }
+
+    .brand strong {
+      display: block;
+      color: #f2c94c;
+    }
+
+    .brand small {
+      display: block;
+      color: #7f8c84;
+      font-size: 8px;
+      margin-top: 3px;
+    }
+
+    .leave-top {
+      border: 1px solid rgba(255,255,255,.12);
+      background: transparent;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 30px 20px 110px;
+    }
+
+    .meeting-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #7be495;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7be495;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .meeting-id {
+      display: inline-block;
+      padding: 9px 14px;
+      border-radius: 8px;
+      background: rgba(242,201,76,.08);
+      border: 1px solid rgba(242,201,76,.2);
+      color: #f2c94c;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .room {
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .mic-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(242,201,76,.1);
+      border: 2px solid rgba(242,201,76,.35);
+      font-size: 48px;
+      margin-bottom: 25px;
+    }
+
+    .status {
+      color: #aab6ae;
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .participants {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .participant {
+      min-width: 120px;
+      padding: 13px;
+      border-radius: 12px;
+      text-align: center;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .participant-avatar {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      background: #174b2b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f2c94c;
+      font-weight: bold;
+    }
+
+    .participant-name {
+      font-size: 12px;
+    }
+
+    .controls {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      min-height: 85px;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      background: rgba(5,15,9,.96);
+      border-top: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .control {
+      min-width: 75px;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: #102319;
+      color: white;
+      cursor: pointer;
+    }
+
+    .control.active {
+      background: #f2c94c;
+      color: #07130d;
+    }
+
+    .control.leave {
+      background: #7e2424;
+      border-color: #a33737;
+    }
+
+    .notice {
+      margin-top: 20px;
+      text-align: center;
+      color: #78857d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media(max-width:600px) {
+      h1 {
+        font-size: 25px;
+      }
+
+      .room {
+        min-height: 380px;
+      }
+
+      .controls {
+        gap: 6px;
+      }
+
+      .control {
+        min-width: auto;
+        padding: 11px 10px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="brand">
+
+    <div class="logo">
+      IK
+    </div>
+
+    <div>
+      <strong>IKDA LIVE</strong>
+      <small>AUDIO MEETING</small>
+    </div>
+
+  </div>
+
+  <button class="leave-top" onclick="leaveMeeting()">
+    Leave
+  </button>
+
+</header>
+
+
+<main>
+
+  <div class="meeting-header">
+
+    <div class="live">
+      <span class="live-dot"></span>
+      LIVE AUDIO ROOM
+    </div>
+
+    <h1>IKDA Community Meeting</h1>
+
+    <div
+      class="meeting-id"
+      id="meetingId"
+      onclick="copyMeetingId()"
+    >
+      Meeting ID: Loading...
+    </div>
+
+  </div>
+
+
+  <section class="room">
+
+    <div class="mic-circle" id="micIcon">
+      🎙️
+    </div>
+
+    <div class="status" id="status">
+      Connecting to the meeting...
+      <br>
+      Please allow microphone access when requested.
+    </div>
+
+
+    <div class="participants" id="participants">
+
+      <div class="participant">
+
+        <div class="participant-avatar">
+          IK
+        </div>
+
+        <div class="participant-name">
+          You
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <div class="notice">
+    IKDA Live is an audio-only meeting platform.
+    Your microphone will be used only while participating
+    in the meeting.
+  </div>
+
+</main>
+
+
+<div class="controls">
+
+  <button
+    class="control active"
+    id="micButton"
+    onclick="toggleMicrophone()"
+  >
+    🎙️ Mic On
+  </button>
+
+  <button
+    class="control"
+    onclick="copyMeetingId()"
+  >
+    🔗 Copy ID
+  </button>
+
+  <button
+    class="control leave"
+    onclick="leaveMeeting()"
+  >
+    📞 Leave
+  </button>
+
+</div>
+
+
+<script>
+
+  // Get meeting ID from URL.
+  // Example:
+  // meeting.html?room=IKDA-123456
+
+  const params = new URLSearchParams(window.location.search);
+
+  const roomId =
+    params.get("room") || "IKDA-DEMO";
+
+  document.getElementById("meetingId").textContent =
+    "Meeting ID: " + roomId;
+
+
+  let microphoneStream = null;
+  let microphoneOn = false;
+
+
+  async function startMicrophone() {
+
+    try {
+
+      microphoneStream =
+        await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: false
+        });
+
+      microphoneOn = true;
+
+      updateMicrophone();
+
+      document.getElementById("status").innerHTML =
+        "Microphone connected.<br>Waiting for other participants...";
+
+    } catch (error) {
+
+      document.getElementById("status").innerHTML =
+        "Microphone access was not granted.<br>" +
+        "Please allow microphone permission and try again.";
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  function toggleMicrophone() {
+
+    if (!microphoneStream) {
+      startMicrophone();
+      return;
+    }
+
+    microphoneOn = !microphoneOn;
+
+    microphoneStream
+      .getAudioTracks()
+      .forEach(track => {
+        track.enabled = microphoneOn;
+      });
+
+    updateMicrophone();
+
+  }
+
+
+  function updateMicrophone() {
+
+    const button =
+      document.getElementById("micButton");
+
+    const icon =
+      document.getElementById("micIcon");
+
+    if (microphoneOn) {
+
+      button.textContent = "🎙️ Mic On";
+      button.classList.add("active");
+      icon.textContent = "🎙️";
+
+    } else {
+
+      button.textContent = "🔇 Mic Off";
+      button.classList.remove("active");
+      icon.textContent = "🔇";
+
+    }
+
+  }
+
+
+  async function copyMeetingId() {
+
+    try {
+
+      await navigator.clipboard.writeText(roomId);
+
+      document.getElementById("meetingId").textContent =
+        "Meeting ID copied!";
+
+      setTimeout(() => {
+
+        document.getElementById("meetingId").textContent =
+          "Meeting ID: " + roomId;
+
+      }, 1500);
+
+    } catch (error) {
+
+      alert("Meeting ID: " + roomId);
+
+    }
+
+  }
+
+
+  function leaveMeeting() {
+
+    if (microphoneStream) {
+
+      microphoneStream
+        .getTracks()
+        .forEach(track => track.stop());
+
+    }
+
+    window.location.href = "index.html";
+
+  }
+
+
+  // Start microphone after page loads.
+  startMicrophone();
+
+</script>
+
+</body>
+</html>
