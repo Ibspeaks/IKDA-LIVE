@@ -4,125 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>IKDA Live | Create Account</title>
+  <title>IKDA Live Registration</title>
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
+      background: #071f16;
+      color: white;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      color: white;
-      background:
-        radial-gradient(circle at top, rgba(35,105,58,.35), transparent 45%),
-        #07130d;
     }
 
-    .container {
+    .box {
       width: 100%;
       max-width: 430px;
+      background: #0d3325;
+      border: 1px solid #c9a227;
+      border-radius: 20px;
+      padding: 30px 25px;
     }
 
     .logo {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f2c94c;
-      color: #07130d;
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    h1 {
       text-align: center;
-      font-size: 30px;
+      color: #d4af37;
+      font-size: 28px;
+      font-weight: bold;
       margin-bottom: 8px;
     }
 
     .subtitle {
       text-align: center;
-      color: #9eaaa2;
-      font-size: 14px;
-      margin-bottom: 30px;
+      color: #b9c9c1;
+      font-size: 13px;
+      margin-bottom: 28px;
     }
 
-    .card {
-      padding: 28px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.09);
+    h2 {
+      text-align: center;
+      color: #d4af37;
+      margin-bottom: 25px;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
-      color: #c7d0ca;
-      font-size: 13px;
-      font-weight: bold;
+      color: #dce7e1;
+      font-size: 14px;
+      margin-bottom: 7px;
     }
 
     input {
       width: 100%;
       padding: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 17px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.13);
-      outline: none;
-      background: #0c1d14;
+      border: 1px solid #557568;
+      background: #071f16;
       color: white;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     input:focus {
-      border-color: #f2c94c;
+      outline: none;
+      border-color: #d4af37;
     }
 
     button {
       width: 100%;
       padding: 15px;
       border: none;
-      border-radius: 11px;
-      background: #f2c94c;
-      color: #07130d;
+      border-radius: 10px;
+      background: #d4af37;
+      color: #071f16;
+      font-size: 16px;
       font-weight: bold;
-      font-size: 15px;
       cursor: pointer;
     }
 
     button:disabled {
-      opacity: .6;
+      opacity: 0.6;
     }
 
     .message {
-      display: none;
+      text-align: center;
       margin-top: 15px;
-      padding: 12px;
-      border-radius: 9px;
-      font-size: 13px;
       line-height: 1.5;
+      font-size: 14px;
+      min-height: 20px;
     }
 
     .login {
       text-align: center;
-      margin-top: 22px;
-      color: #9eaaa2;
+      margin-top: 25px;
+      color: #b9c9c1;
       font-size: 14px;
     }
 
     .login a {
-      color: #f2c94c;
+      color: #d4af37;
       text-decoration: none;
       font-weight: bold;
     }
@@ -131,255 +118,249 @@
       display: block;
       text-align: center;
       margin-top: 18px;
-      color: #7f8d84;
+      color: #9fb2a8;
       text-decoration: none;
-      font-size: 13px;
-    }
-
-    .terms {
-      color: #758179;
-      font-size: 11px;
-      line-height: 1.5;
-      margin: -4px 0 18px;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="box">
 
-    <div class="logo">IK</div>
+  <div class="logo">
+    IKDA LIVE
+  </div>
 
-    <h1>Create Account</h1>
+  <div class="subtitle">
+    IGALA KINGDOM DESCENDANT ASSOCIATION
+  </div>
 
-    <p class="subtitle">
-      Join the IKDA Live community
-    </p>
+  <h2>
+    Create Account
+  </h2>
 
-    <div class="card">
+  <form id="registerForm">
 
-      <form id="registerForm">
+    <label>
+      Full Name
+    </label>
 
-        <label for="name">Full Name</label>
+    <input
+      type="text"
+      id="name"
+      placeholder="Enter your full name"
+      required
+    >
 
-        <input
-          type="text"
-          id="name"
-          placeholder="Enter your full name"
-          required
-        >
 
-        <label for="email">Email Address</label>
+    <label>
+      Email Address
+    </label>
 
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          required
-        >
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email"
+      required
+    >
 
-        <label for="password">Password</label>
 
-        <input
-          type="password"
-          id="password"
-          placeholder="Create a password"
-          minlength="6"
-          required
-        >
+    <label>
+      Password
+    </label>
 
-        <label for="confirmPassword">Confirm Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Create a password"
+      minlength="6"
+      required
+    >
 
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Confirm your password"
-          minlength="6"
-          required
-        >
 
-        <p class="terms">
-          By creating an account, you agree to use
-          IKDA Live responsibly and respectfully.
-        </p>
+    <label>
+      Confirm Password
+    </label>
 
-        <button type="submit" id="registerButton">
-          Create Account
-        </button>
+    <input
+      type="password"
+      id="confirmPassword"
+      placeholder="Confirm your password"
+      minlength="6"
+      required
+    >
 
-        <div class="message" id="message"></div>
 
-      </form>
+    <button
+      type="submit"
+      id="registerButton"
+    >
+      CREATE ACCOUNT
+    </button>
 
-    </div>
+  </form>
 
-    <div class="login">
-      Already have an account?
-      <a href="login.html">Login</a>
-    </div>
 
-    <a href="index.html" class="back">
-      ← Back to IKDA Live
+  <div
+    class="message"
+    id="message"
+  ></div>
+
+
+  <div class="login">
+    Already have an account?
+    <a href="login.html">
+      Login
     </a>
-
   </div>
 
 
-  <!-- Supabase library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <a
+    class="back"
+    href="index.html"
+  >
+    ← Back to IKDA Live
+  </a>
 
-  <!-- IKDA Supabase settings -->
-  <script src="supabase-config.js"></script>
+</div>
 
 
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 
-    const { createClient } = supabase;
+<script>
 
-    const supabaseClient = createClient(
+  const { createClient } = supabase;
+
+  const supabaseClient =
+    createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
 
-    const form =
-      document.getElementById("registerForm");
+  const form =
+    document.getElementById(
+      "registerForm"
+    );
 
-    const button =
-      document.getElementById("registerButton");
+  const button =
+    document.getElementById(
+      "registerButton"
+    );
 
-    const message =
-      document.getElementById("message");
+  const message =
+    document.getElementById(
+      "message"
+    );
 
 
-    function showMessage(text, success = false) {
+  form.addEventListener(
+    "submit",
+    async function(event) {
 
-      message.style.display = "block";
-      message.textContent = text;
+      event.preventDefault();
 
-      if (success) {
 
-        message.style.background =
-          "rgba(70,200,110,.10)";
+      const name =
+        document.getElementById(
+          "name"
+        ).value.trim();
 
-        message.style.color =
-          "#7be495";
 
-      } else {
+      const email =
+        document.getElementById(
+          "email"
+        ).value.trim();
 
-        message.style.background =
-          "rgba(255,80,80,.10)";
 
-        message.style.color =
-          "#ff9c9c";
+      const password =
+        document.getElementById(
+          "password"
+        ).value;
+
+
+      const confirmPassword =
+        document.getElementById(
+          "confirmPassword"
+        ).value;
+
+
+      message.textContent = "";
+
+
+      if (password !== confirmPassword) {
+
+        message.textContent =
+          "Passwords do not match.";
+
+        return;
 
       }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "CREATING ACCOUNT...";
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signUp({
+
+          email: email,
+
+          password: password,
+
+          options: {
+
+            data: {
+              full_name: name
+            }
+
+          }
+
+        });
+
+
+      if (error) {
+
+        message.textContent =
+          error.message;
+
+        button.disabled = false;
+
+        button.textContent =
+          "CREATE ACCOUNT";
+
+        return;
+
+      }
+
+
+      message.style.color =
+        "#d4af37";
+
+
+      message.textContent =
+        "Account created successfully. Check your email if verification is required, then login.";
+
+
+      button.disabled = false;
+
+      button.textContent =
+        "ACCOUNT CREATED";
 
     }
 
+  );
 
-    form.addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-
-        const name =
-          document.getElementById("name")
-            .value.trim();
-
-        const email =
-          document.getElementById("email")
-            .value.trim();
-
-        const password =
-          document.getElementById("password")
-            .value;
-
-        const confirmPassword =
-          document.getElementById("confirmPassword")
-            .value;
-
-
-        if (password !== confirmPassword) {
-
-          showMessage(
-            "The passwords do not match."
-          );
-
-          return;
-        }
-
-
-        if (password.length < 6) {
-
-          showMessage(
-            "Password must contain at least 6 characters."
-          );
-
-          return;
-        }
-
-
-        button.disabled = true;
-        button.textContent = "Creating Account...";
-
-        message.style.display = "none";
-
-
-        try {
-
-          const { data, error } =
-            await supabaseClient.auth.signUp({
-
-              email: email,
-
-              password: password,
-
-              options: {
-                data: {
-                  full_name: name
-                }
-              }
-
-            });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-          showMessage(
-            "Account created successfully. Check your email if verification is required, then login.",
-            true
-          );
-
-
-          form.reset();
-
-          button.disabled = false;
-          button.textContent = "Create Account";
-
-
-        } catch (error) {
-
-          showMessage(
-            error.message ||
-            "Unable to create your account."
-          );
-
-          button.disabled = false;
-          button.textContent = "Create Account";
-
-        }
-
-      }
-    );
-
-  </script>
+</script>
 
 </body>
 </html>
