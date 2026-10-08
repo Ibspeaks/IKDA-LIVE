@@ -26,8 +26,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,.08);
       background: #091910;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
     .brand {
@@ -72,7 +72,7 @@
     main {
       max-width: 1000px;
       margin: auto;
-      padding: 30px 20px 110px;
+      padding: 30px 20px 120px;
     }
 
     .meeting-header {
@@ -99,12 +99,12 @@
 
     h1 {
       font-size: 30px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .meeting-id {
       display: inline-block;
-      padding: 9px 14px;
+      padding: 10px 15px;
       border-radius: 8px;
       background: rgba(242,201,76,.08);
       border: 1px solid rgba(242,201,76,.2);
@@ -114,7 +114,7 @@
     }
 
     .room {
-      min-height: 420px;
+      min-height: 430px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -126,8 +126,8 @@
     }
 
     .mic-circle {
-      width: 120px;
-      height: 120px;
+      width: 125px;
+      height: 125px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -142,12 +142,12 @@
       color: #aab6ae;
       text-align: center;
       line-height: 1.6;
-      margin-bottom: 25px;
+      margin-bottom: 28px;
     }
 
     .participants {
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
@@ -225,6 +225,7 @@
     }
 
     @media(max-width:600px) {
+
       h1 {
         font-size: 25px;
       }
@@ -242,6 +243,7 @@
         padding: 11px 10px;
         font-size: 12px;
       }
+
     }
   </style>
 </head>
@@ -263,7 +265,10 @@
 
   </div>
 
-  <button class="leave-top" onclick="leaveMeeting()">
+  <button
+    class="leave-top"
+    onclick="leaveMeeting()"
+  >
     Leave
   </button>
 
@@ -279,7 +284,9 @@
       LIVE AUDIO ROOM
     </div>
 
-    <h1>IKDA Community Meeting</h1>
+    <h1>
+      IKDA Community Meeting
+    </h1>
 
     <div
       class="meeting-id"
@@ -294,18 +301,28 @@
 
   <section class="room">
 
-    <div class="mic-circle" id="micIcon">
+    <div
+      class="mic-circle"
+      id="micIcon"
+    >
       🎙️
     </div>
 
-    <div class="status" id="status">
-      Connecting to the meeting...
+
+    <div
+      class="status"
+      id="status"
+    >
+      Starting IKDA Live...
       <br>
-      Please allow microphone access when requested.
+      Please allow microphone access.
     </div>
 
 
-    <div class="participants" id="participants">
+    <div
+      class="participants"
+      id="participants"
+    >
 
       <div class="participant">
 
@@ -325,9 +342,8 @@
 
 
   <div class="notice">
-    IKDA Live is an audio-only meeting platform.
-    Your microphone will be used only while participating
-    in the meeting.
+    IKDA Live uses your microphone for
+    audio communication during the meeting.
   </div>
 
 </main>
@@ -360,94 +376,101 @@
 </div>
 
 
+<!-- Supabase library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase settings -->
+<script src="supabase-config.js"></script>
+
+<!-- IKDA audio engine -->
+<script src="meeting.js"></script>
+
+
 <script>
 
-  // Get meeting ID from URL.
-  // Example:
-  // meeting.html?room=IKDA-123456
-
-  const params = new URLSearchParams(window.location.search);
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
   const roomId =
     params.get("room") || "IKDA-DEMO";
 
-  document.getElementById("meetingId").textContent =
+
+  document.getElementById(
+    "meetingId"
+  ).textContent =
     "Meeting ID: " + roomId;
 
 
-  let microphoneStream = null;
-  let microphoneOn = false;
-
-
-  async function startMicrophone() {
-
-    try {
-
-      microphoneStream =
-        await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: false
-        });
-
-      microphoneOn = true;
-
-      updateMicrophone();
-
-      document.getElementById("status").innerHTML =
-        "Microphone connected.<br>Waiting for other participants...";
-
-    } catch (error) {
-
-      document.getElementById("status").innerHTML =
-        "Microphone access was not granted.<br>" +
-        "Please allow microphone permission and try again.";
-
-      console.error(error);
-
-    }
-
-  }
+  let microphoneOn = true;
 
 
   function toggleMicrophone() {
 
-    if (!microphoneStream) {
-      startMicrophone();
+    if (
+      typeof localStream === "undefined" ||
+      !localStream
+    ) {
+
+      document.getElementById(
+        "status"
+      ).innerHTML =
+        "Microphone is not ready yet.";
+
       return;
+
     }
 
-    microphoneOn = !microphoneOn;
 
-    microphoneStream
+    microphoneOn =
+      !microphoneOn;
+
+
+    localStream
       .getAudioTracks()
       .forEach(track => {
-        track.enabled = microphoneOn;
+
+        track.enabled =
+          microphoneOn;
+
       });
 
-    updateMicrophone();
-
-  }
-
-
-  function updateMicrophone() {
 
     const button =
-      document.getElementById("micButton");
+      document.getElementById(
+        "micButton"
+      );
 
     const icon =
-      document.getElementById("micIcon");
+      document.getElementById(
+        "micIcon"
+      );
+
 
     if (microphoneOn) {
 
-      button.textContent = "🎙️ Mic On";
-      button.classList.add("active");
-      icon.textContent = "🎙️";
+      button.textContent =
+        "🎙️ Mic On";
+
+      button.classList.add(
+        "active"
+      );
+
+      icon.textContent =
+        "🎙️";
 
     } else {
 
-      button.textContent = "🔇 Mic Off";
-      button.classList.remove("active");
-      icon.textContent = "🔇";
+      button.textContent =
+        "🔇 Mic Off";
+
+      button.classList.remove(
+        "active"
+      );
+
+      icon.textContent =
+        "🔇";
 
     }
 
@@ -456,46 +479,69 @@
 
   async function copyMeetingId() {
 
+    const text =
+      roomId;
+
+
     try {
 
-      await navigator.clipboard.writeText(roomId);
+      await navigator.clipboard
+        .writeText(text);
 
-      document.getElementById("meetingId").textContent =
+
+      const element =
+        document.getElementById(
+          "meetingId"
+        );
+
+
+      element.textContent =
         "Meeting ID copied!";
+
 
       setTimeout(() => {
 
-        document.getElementById("meetingId").textContent =
+        element.textContent =
           "Meeting ID: " + roomId;
 
       }, 1500);
 
+
     } catch (error) {
 
-      alert("Meeting ID: " + roomId);
+      alert(
+        "Meeting ID: " + text
+      );
 
     }
 
   }
 
 
-  function leaveMeeting() {
+  async function leaveMeeting() {
 
-    if (microphoneStream) {
+    try {
 
-      microphoneStream
-        .getTracks()
-        .forEach(track => track.stop());
+      if (
+        typeof leaveIKDAMeeting ===
+        "function"
+      ) {
+
+        await leaveIKDAMeeting();
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
 
     }
 
-    window.location.href = "index.html";
+
+    window.location.href =
+      "index.html";
 
   }
-
-
-  // Start microphone after page loads.
-  startMicrophone();
 
 </script>
 
