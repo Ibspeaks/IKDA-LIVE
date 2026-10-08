@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>IKDA Live | Login</title>
 
   <style>
@@ -110,8 +109,6 @@
       margin-top: 15px;
       padding: 12px;
       border-radius: 9px;
-      background: rgba(255,80,80,.1);
-      color: #ff9c9c;
       font-size: 13px;
       line-height: 1.5;
     }
@@ -196,23 +193,115 @@
   </div>
 
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Our Supabase settings -->
+  <script src="supabase-config.js"></script>
+
   <script>
-    /*
-      Supabase authentication will be connected
-      to this page in the next stage.
-    */
 
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+    const { createClient } = supabase;
 
-      const message = document.getElementById("message");
+    const supabaseClient = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+    const form =
+      document.getElementById("loginForm");
+
+    const button =
+      document.getElementById("loginButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    function showMessage(text, success = false) {
 
       message.style.display = "block";
-      message.style.background = "rgba(242,201,76,.08)";
-      message.style.color = "#f2c94c";
-      message.textContent =
-        "Authentication connection will be activated when Supabase is connected.";
+      message.textContent = text;
+
+      if (success) {
+
+        message.style.background =
+          "rgba(70,200,110,.10)";
+
+        message.style.color =
+          "#7be495";
+
+      } else {
+
+        message.style.background =
+          "rgba(255,80,80,.10)";
+
+        message.style.color =
+          "#ff9c9c";
+      }
+    }
+
+
+    form.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+
+      button.disabled = true;
+      button.textContent = "Logging in...";
+
+      message.style.display = "none";
+
+
+      try {
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          "Login successful. Opening IKDA Live...",
+          true
+        );
+
+
+        setTimeout(function() {
+
+          window.location.href =
+            "meeting.html";
+
+        }, 1000);
+
+
+      } catch (error) {
+
+        showMessage(
+          error.message ||
+          "Unable to login. Please check your details."
+        );
+
+        button.disabled = false;
+        button.textContent = "Login";
+
+      }
+
     });
+
   </script>
 
 </body>
